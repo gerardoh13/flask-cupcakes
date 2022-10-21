@@ -37,17 +37,28 @@ cupcakesUl.addEventListener("click", (e) => {
   }
 });
 
+// cupcakeForm.addEventListener("submit", (e) => {
+//   if (!cupcakeForm.checkValidity()) {
+//     e.preventDefault();
+//     e.stopPropagation();
+//   }
+//   cupcakeForm.classList.add("was-validated");
+// }, false);
+
 cupcakeForm.addEventListener("submit", (e) => {
-  // e.preventDefault();
+  e.preventDefault();
   if (!cupcakeForm.checkValidity()) {
-    e.preventDefault();
     e.stopPropagation();
+    cupcakeForm.classList.add("was-validated");
+    return
   }
-  cupcakeForm.classList.add("was-validated");
-  addCupcake();
+  addCupcake()
+  cupcakeForm.reset()
+  cupcakeForm.classList.remove("was-validated");
 }, false);
 
 async function addCupcake() {
+  console.log('hello')
 flav = flavor.value
 console.log(flav)
 }
