@@ -1,34 +1,58 @@
 {% extends "base.html" %} {% block title %} Home {% endblock %} {% block content
-    %}
-<ul id="cupcakesUl">
-
-</ul>
-<form action="">
-    {{ form.hidden_tag() }}
-    <div class="container">
-      <div class="row">
-          {% for field in form if field.widget.input_type !='hidden' %}
-          <div class="col-2">{{ field.label }}</div>
-          <br>
-          <br>
-          <div class="col-10">
-              {% if field.widget.input_type != 'checkbox' %}
-              {{ field(class_="form-control") }} 
-              {% else %}
-            {{ field }} 
-            {% endif %}
-            {% for error in field.errors %} {{
-            error }} {% endfor %}
-          </div>
-          {% endfor %}
-        </div>
-        <li id="c.id">
-            <div>
-                <p>`${c.flavor} ${c.size} ${c.rating}`</p>
-                <button class="btn btn-danger">x</button>
-                <img src="" alt="">
-            </div>
-        </li>
+%}
+<h1>Sam's Cupcakes!</h1>
+<ul id="cupcakesUl"></ul>
+<h2>Add a cupcake</h2>
+<div class="container">
+  <form id="cupcakeForm" action="" class="needs-validation row" novalidate>
+    <div class="col-2">
+      <label for="flavor">Flavor:</label>
     </div>
-</form>
-    {% endblock %}
+    <div class="col-10">
+      <input
+        name="flavor"
+        id="flavor"
+        type="text"
+        class="form-control"
+        required
+      />
+      <div class="invalid-feedback">Flavor cannot be blank.</div>
+    </div>
+    <div class="col-2">
+      <label for="size">Size:</label>
+    </div>
+    <div class="col-10">
+      <select class="form-select" name="size" id="size" required>
+        <option value="">Select a size</option>
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
+      <div class="invalid-feedback">Select a size.</div>
+    </div>
+    <div class="col-2">
+      <label for="rating">Rating:</label>
+    </div>
+    <div class="col-10">
+      <input
+        type="number"
+        name="rating"
+        id="rating"
+        class="form-control"
+        required
+      />
+      <div class="invalid-feedback">Rating cannot be blank.</div>
+    </div>
+    <div class="col-2">
+      <label for="image"> Photo URL:</label>
+    </div>
+    <div class="col-10">
+      <input name="image" id="image" type="text" class="form-control" />
+    </div>
+    <div class="col-12 text-end">
+        <button class="btn btn-warning mt-2">Add Cupcake!</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

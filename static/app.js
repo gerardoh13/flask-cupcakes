@@ -1,12 +1,13 @@
-let cupcakesUl = document.getElementById("cupcakesUl");
+const cupcakesUl = document.getElementById("cupcakesUl");
+const cupcakeForm = document.getElementById("cupcakeForm");
+const flavor = document.getElementById("flavor");
+const size = document.getElementById("size");
+const rating = document.getElementById("rating");
+const image = document.getElementById("image");
 
 async function fetchAllCupcakes() {
   res = await axios.get(`/api/cupcakes`);
-  renderCupcakes(res.data.cupcakes);
-}
-
-function renderCupcakes(cupcakes) {
-  for (let c of cupcakes) {
+  for (let c of res.data.cupcakes) {
     let cupcake = $(generateCupcake(c));
     $("#cupcakesUl").append(cupcake);
   }
@@ -14,13 +15,16 @@ function renderCupcakes(cupcakes) {
 
 function generateCupcake(c) {
   return `
-<li id=${c.id}>
-<span>
+<li id=${c.id} class="row">
+<div class="col-6">
 <img src=${c.image} alt="cupcake img">
-    <p>${c.flavor} ${c.size} ${c.rating}
-    <button class="btn btn-danger">x</button>
-    </p>
-</span>
+</div>
+<div class="col-4">
+<p>${c.flavor} ${c.size} ${c.rating}</p>
+</div>
+<div class="col-2">
+<button class="btn btn-danger">x</button>
+</div>
 </li>
 `;
 }
@@ -28,8 +32,24 @@ function generateCupcake(c) {
 cupcakesUl.addEventListener("click", (e) => {
   let target = e.target;
   if (target.tagName === "BUTTON") {
-    e.target.parentElement.remove();
+    delLi = e.target.parentElement.parentElement;
+    delLi.remove();
   }
 });
+
+cupcakeForm.addEventListener("submit", (e) => {
+  // e.preventDefault();
+  if (!cupcakeForm.checkValidity()) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  cupcakeForm.classList.add("was-validated");
+  addCupcake();
+}, false);
+
+async function addCupcake() {
+flav = flavor.value
+console.log(flav)
+}
 
 fetchAllCupcakes();
