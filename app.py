@@ -1,9 +1,8 @@
 """Flask app for Cupcakes"""
 from flask_debugtoolbar import DebugToolbarExtension
-from flask import Flask, redirect, render_template, request, flash, jsonify
+from flask import Flask, render_template, request, jsonify
 from models import db, connect_db, Cupcake
-from forms import AddCupcakeForm
-# from sqlalchemy import desc
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes'
@@ -19,8 +18,7 @@ debug = DebugToolbarExtension(app)
 @app.route('/')
 def show_homepage():
     """shows homepage"""
-    form = AddCupcakeForm()
-    return render_template("home.html", form=form)
+    return render_template("home.html")
     
 @app.route('/api/cupcakes')
 def list_cupcakes():
@@ -43,7 +41,7 @@ def create_cupcakes():
         flavor=request.json["flavor"],
         size=request.json["size"],
         rating=request.json["rating"],
-        image=request.json["image"],
+        image=request.json["image"] if request.json["image"] else None,
     )
     db.session.add(new_cupcake)
     db.session.commit()
@@ -59,6 +57,8 @@ def update_cupcakes(id):
     cupcake.size = request.json.get('size', cupcake.size)
     cupcake.rating = request.json.get('rating', cupcake.rating)
     cupcake.image = request.json.get('image', cupcake.image)
+    cupcake.image = cupcake.image if cupcake.image else None
+
 
     db.session.commit()
     return jsonify(cupcake=cupcake.serialize())

@@ -1,9 +1,5 @@
 const cupcakesUl = document.getElementById("cupcakesUl");
-const cupcakeForm = document.getElementById("cupcakeForm");
-const flavor = document.getElementById("flavor");
-const size = document.getElementById("size");
-const rating = document.getElementById("rating");
-const image = document.getElementById("image");
+const addCupcakeForm = document.getElementById("addCupcakeForm");
 
 async function fetchAllCupcakes() {
   res = await axios.get(`/api/cupcakes`);
@@ -14,53 +10,83 @@ async function fetchAllCupcakes() {
 }
 
 function generateCupcake(c) {
-  return `
-<li id=${c.id} class="row">
-<div class="col-6">
-<img src=${c.image} alt="cupcake img">
+return `
+<div id="cupcake-${c.id}" class="card m-auto col-lg-3 col-xs-2" style="width: 18rem;">
+  <img src="${c.image}" class="card-img-top cardImg" alt="${c.flavor} cupcake">
+  <div class="card-body row">
+    <div class="col-10">
+    <h5 class="card-title">${c.flavor}</h5>
+    <p class="card-text">
+    <b>Size: </b>${c.size} <b>Rating: </b>${c.rating}
+    </p>
+    </div>
+    <div class="col-2">
+    <br/>
+    <button
+    id="edit-${c.id}"
+    class="btn btn-secondary btn-sm"
+    data-bs-toggle="modal"
+    data-bs-target="#editCupcake">e</button>
+    <button id="delete-${c.id}"class="btn btn-danger btn-sm">x</button>
+    </div>
+  </div>
 </div>
-<div class="col-4">
-<p>${c.flavor} ${c.size} ${c.rating}</p>
-</div>
-<div class="col-2">
-<button class="btn btn-danger">x</button>
-</div>
-</li>
-`;
+`
 }
 
-cupcakesUl.addEventListener("click", (e) => {
+cupcakesUl.addEventListener("click", async (e) => {
   let target = e.target;
-  if (target.tagName === "BUTTON") {
-    delLi = e.target.parentElement.parentElement;
-    delLi.remove();
+  let type = target.id.split("-")
+  if (target.tagName === "BUTTON" && type[0] !== "edit") {
+    deleteCupcake(type[1])
+  } else {
+    showEditForm(type[1])
   }
 });
 
-// cupcakeForm.addEventListener("submit", (e) => {
-//   if (!cupcakeForm.checkValidity()) {
-//     e.preventDefault();
-//     e.stopPropagation();
-//   }
-//   cupcakeForm.classList.add("was-validated");
-// }, false);
+async function deleteCupcake(id) {
+  await axios.delete(`api/cupcakes/${id}`);
+  document.getElementById(`cupcake-${id}`).remove()
+}
 
-cupcakeForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (!cupcakeForm.checkValidity()) {
-    e.stopPropagation();
-    cupcakeForm.classList.add("was-validated");
-    return
-  }
-  addCupcake()
-  cupcakeForm.reset()
-  cupcakeForm.classList.remove("was-validated");
-}, false);
+async function showEditForm(id){
+res = await axios.get(`api/cupcakes/${id}`);
+console.log(res.data.cupcake)
+document.getElementById("editFlavor").value = 'catfood';
+document.getElementById("editSize").value = 'small';
+document.getElementById("editRating").value = 1;
+document.getElementById("editImage").value = "www.google.com";
+
+}
+addCupcakeForm.addEventListener(
+  "submit",
+  (e) => {
+    e.preventDefault();
+    if (!addCupcakeForm.checkValidity()) {
+      e.stopPropagation();
+      addCupcakeForm.classList.add("was-validated");
+      return;
+    }
+    addCupcake();
+    addCupcakeForm.reset();
+    addCupcakeForm.classList.remove("was-validated");
+  },
+  false
+);
 
 async function addCupcake() {
-  console.log('hello')
-flav = flavor.value
-console.log(flav)
+  let flavor = document.getElementById("flavor").value;
+  let size = document.getElementById("size").value;
+  let rating = document.getElementById("rating").value;
+  let image = document.getElementById("image").value;
+  const newCupcakeRes = await axios.post("api/cupcakes", {
+    flavor,
+    size,
+    rating,
+    image,
+  });
+  let newCupcake = generateCupcake(newCupcakeRes.data.cupcake);
+  $("#cupcakesUl").append(newCupcake);
 }
 
 fetchAllCupcakes();
