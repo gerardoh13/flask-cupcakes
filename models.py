@@ -12,9 +12,9 @@ def connect_db(app):
 
 
 class Cupcake(db.Model):
-    """User class"""
+    """Cupcake class"""
 
-    __tablename__ = "users"
+    __tablename__ = "cupcakes"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     flavor = db.Column(db.Text, nullable=False)
@@ -24,9 +24,9 @@ class Cupcake(db.Model):
                       default="https://tinyurl.com/demo-cupcake")
 
     def __repr__(self):
-        """Show info about user."""
+        """Show info about cupcake."""
         c = self
-        return f"<User {c.id} {c.flavor} {c.size} {c.rating} {c.image}>"
+        return f"<Cupcake {c.id} {c.flavor} {c.size} {c.rating} {c.image}>"
 
     def serialize(self):
         return {
